@@ -8,6 +8,8 @@ import java.util.List;
 
 public interface EventSystemInterface {
     void saveEvent(Event event);
+
     List getAllEvent();
+
     void deleteEvent(Event event);
 }
