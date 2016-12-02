@@ -26,7 +26,7 @@ public class Event extends ParseObject implements Serializable {
 
     @Override
     public String toString() {
-        return getTitle();
+        return getTitle() + ": " + getText();
     }
 
     //Getters & Setters
@@ -54,7 +54,7 @@ public class Event extends ParseObject implements Serializable {
         put(DATE_KEY, date);
     }
 
-    public void setDatetoNow() {
+    public void setDateToNow() {
         Calendar cal = new GregorianCalendar(Calendar.YEAR, Calendar.MONTH, Calendar.DAY_OF_MONTH);
         Date date = cal.getTime();
         put(DATE_KEY, date);

@@ -53,17 +53,15 @@ public class MainActivity extends AppCompatActivity {
         initNewEventButton();
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        eventList = parseUsageMethods.getAllEvents();
-        adapter.notifyDataSetChanged();
-    }
-
     private void initEventList() {
-        eventList = parseUsageMethods.getAllEvents();
-        adapter = new ArrayAdapter<>(MainActivity.this, android.R.layout.simple_list_item_1, eventList);
-        listView.setAdapter(adapter);
+        parseUsageMethods.getAllEvents(new EventSystemInterface.EventArrayListCallback() {
+            @Override
+            public void returnArrayList(ArrayList<Event> eventsArrayList) {
+                eventList = eventsArrayList;
+                adapter = new ArrayAdapter<>(MainActivity.this, android.R.layout.simple_list_item_1, eventList);
+                listView.setAdapter(adapter);
+            }
+        });
     }
 
     private void initParseStuff() {
@@ -116,10 +114,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
 
-        Event newEvent = (Event) intent.getSerializableExtra(EVENT_STRING);
-        adapter.add(newEvent);
-
-        //adapter.notifyDataSetChanged();
+        initEventList();
 
     }
 }
