@@ -6,5 +6,6 @@
     <string name="event_title"><b>Event Title:</b></string>
     <string name="event_text"><b>Event Text:</b></string>
     <string name="set_event"><u>Set Event:</u></string>
+    <string name="title_activity_show_event">ShowEventActivity</string>
 
 </resources>

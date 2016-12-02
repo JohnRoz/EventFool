@@ -35,6 +35,7 @@ public class ManageEventsActivity extends AppCompatActivity {
     static final String SPLIT_DATE_BY = "/";
     static final String SPLIT_TIME_BY = ":";
 
+    // Binding views using ButterKnife:
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     @BindView(R.id.set_event_id)
@@ -43,7 +44,7 @@ public class ManageEventsActivity extends AppCompatActivity {
     AppCompatTextView dateWidget;
     @BindView(R.id.time_WGT)
     AppCompatTextView timeWidget;
-    @BindView(R.id.save_BTN)
+    @BindView(R.id.save_FAB)
     FloatingActionButton saveBtn;
     @BindView(R.id.event_title_ID)
     EditText eventTitle;

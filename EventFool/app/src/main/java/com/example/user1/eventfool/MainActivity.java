@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
     Toolbar toolbar;
     @BindView(R.id.listView)
     ListView listView;
-    @BindView(R.id.addEvent)
+    @BindView(R.id.addEvent_FAB)
     FloatingActionButton addEvent;
 
     private ArrayList<Event> eventList;// The list of Events.
@@ -61,7 +61,27 @@ public class MainActivity extends AppCompatActivity {
 
         initNewEventButton();
 
+        initPresentEvent();
+
         initDeleteEvent();
+    }
+
+    /**
+     * This runs when an Item from the ListView is pressed.
+     * This starts ShowEventActivity.
+     * The Event that was pressed is passed to ShowEventActivity as an extra.
+     */
+    private void initPresentEvent() {
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Event thisEvent = adapter.getItem(position);// The Event that was pressed.
+
+                Intent intent = new Intent(MainActivity.this, ShowEventActivity.class);
+                intent.putExtra(EVENT_STRING, thisEvent);
+                startActivity(intent);
+            }
+        });
     }
 
     /**
@@ -75,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
 
                 // The Event that was pressed.
-                final Event event = eventList.get(position);
+                final Event event = adapter.getItem(position);
 
                 // Asking the user if he's SURE he wants to delete the event.
                 Snackbar.make(view, "Are you SURE you want to delete the Event ?", Snackbar.LENGTH_LONG)
@@ -95,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * This runs after the addEvent button was pressed.
-     * This will start ManagerEventsActivity for a result.
+     * This starts ManagerEventsActivity for a result.
      */
     private void initNewEventButton() {
         addEvent.setOnClickListener(new View.OnClickListener() {

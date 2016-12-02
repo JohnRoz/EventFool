@@ -3,7 +3,7 @@
     package="com.example.user1.eventfool">
 
     <!-- Permissions -->
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
@@ -25,6 +25,10 @@
         <activity
             android:name=".ManageEventsActivity"
             android:label="@string/title_activity_manage_events"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ShowEventActivity"
+            android:label="@string/title_activity_show_event"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 

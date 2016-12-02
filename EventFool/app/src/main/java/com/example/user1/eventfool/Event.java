@@ -22,6 +22,7 @@ public class Event extends ParseObject implements Serializable {
     private final String TEXT_KEY = "TEXT_KEY";
     private final String DATE_KEY = "DATE_KEY";
 
+
     public Event() {
     }//Default constructor is required.
 
