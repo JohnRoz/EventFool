@@ -16,9 +16,12 @@ import static com.example.user1.eventfool.ManageEventsActivity.SPLIT_TIME_BY;
  * Created by USER1 on 01/12/2016.
  */
 
+/**
+ * This is a Fragment of a TimePickerDialog
+ */
 public class TimePickerFragment extends DialogFragment implements TimePickerDialog.OnTimeSetListener {
 
-    AppCompatTextView timeWidget;
+    AppCompatTextView timeWidget;// The Time widget.
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -45,29 +48,30 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
     }
 
     /**
-     * Set the text of the timeWidget with the time chosen by the user.
+     * Called when the user is done setting a new time and the dialog has closed.
+     * This sets the text of the timeWidget with the time chosen by the user.
      *
-     * @param view
-     * @param hourOfDay
-     * @param minute
+     * @param view      The view associated with this listener.
+     * @param hourOfDay The hour that was set.
+     * @param minute    The minute that was set.
      */
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
         timeWidget = (AppCompatTextView) getActivity().findViewById(R.id.time_WGT);
 
-        //The next 3 If (or else If) statements are in the cases that the hour or the minute is "00", so i want it
-        // to present is as "00" and not as just "0".
-        if ((hourOfDay + "").equals("00") && (minute + "").equals("00"))
-            timeWidget.setText("00:00");
+        String hourString = hourOfDay + "";
+        String minuteString = minute + "";
 
-        else if ((hourOfDay + "").equals("00"))
-            timeWidget.setText("00:" + minute);
+        // 00 in int turns to 0
+        if (hourString.equals("0"))
+            hourString = "00";
 
-        else if ((minute + "").equals("00"))
-            timeWidget.setText(hourOfDay + ":00");
+        if (minuteString.equals("0"))
+            minuteString = "00";
 
-        else
-            timeWidget.setText(hourOfDay + ":" + minute);
+
+        timeWidget.setText(hourString + ":" + minuteString);
 
 
     }
+
 }

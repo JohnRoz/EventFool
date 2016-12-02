@@ -1,14 +1,11 @@
 package com.example.user1.eventfool;
 
 import android.os.AsyncTask;
-import android.util.Log;
 
-import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import static com.example.user1.eventfool.MainActivity.EVENT_STRING;
 
@@ -16,10 +13,19 @@ import static com.example.user1.eventfool.MainActivity.EVENT_STRING;
  * Created by USER1 on 29/11/2016.
  */
 
+/**
+ * This class implements the EventSystemInterface, in order to manage methods that will take care of Events.
+ * This class is responsible for the methods that manage the interaction between the Events, and the Parse server.
+ */
 public class ParseUsageMethods implements EventSystemInterface {
 
     ArrayList<Event> eventList;// The List of All Events to be returned in getAllEvent().
 
+    /**
+     * This is used to save an Event in the Parse server.
+     *
+     * @param event The Event to be saved to the Parse server.
+     */
     @Override
     public void saveEvent(Event event) {
         event.saveInBackground();
@@ -68,8 +74,13 @@ public class ParseUsageMethods implements EventSystemInterface {
         }.execute();
     }
 
+    /**
+     * This is used to delete an Event from the Parse server.
+     *
+     * @param event The Event to be deleted from the Parse server.
+     */
     @Override
     public void deleteEvent(Event event) {
-
+        event.deleteInBackground();
     }
 }

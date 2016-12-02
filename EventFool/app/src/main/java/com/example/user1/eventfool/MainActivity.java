@@ -3,13 +3,16 @@ package com.example.user1.eventfool;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.parse.Parse;
 import com.parse.ParseObject;
@@ -19,13 +22,19 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+/**
+ * This is the Main Activity.
+ */
 public class MainActivity extends AppCompatActivity {
 
-    static final int START_ACTIVITY_FOR_RESULT_CONST = 100;
+    static final int START_ACTIVITY_FOR_RESULT_REQUEST_CODE = 100; // The requestCode for onActivityResult().
     static final String EVENT_STRING = "Events";
+
+    // ACTIONS:
     static final String ACTION_CREATE_EVENT = "com.example.user1.eventfool.action.CREATE_EVENT";
     static final String ACTION_EDIT_EVENT = "com.example.user1.eventfool.action.EDIT_EVENT";
 
+    // Binding views using ButterKnife:
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     @BindView(R.id.listView)
@@ -33,16 +42,16 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.addEvent)
     FloatingActionButton addEvent;
 
-    ArrayList<Event> eventList;
-    ArrayAdapter<Event> adapter;
-    ParseUsageMethods parseUsageMethods;
+    private ArrayList<Event> eventList;// The list of Events.
+    private ArrayAdapter<Event> adapter;// The ArrayAdapter to contain the list of the Events and present it in the ListView.
+    private ParseUsageMethods parseUsageMethods;// An instance of the class that holds the methods to handle the Parse actions.
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setSupportActionBar(toolbar);
-        ButterKnife.bind(this);
+        ButterKnife.bind(this);// ButterKnife is Awesome !
 
         parseUsageMethods = new ParseUsageMethods();
 
@@ -51,8 +60,60 @@ public class MainActivity extends AppCompatActivity {
         initEventList();
 
         initNewEventButton();
+
+        initDeleteEvent();
     }
 
+    /**
+     * This runs when an Item from the ListView is pressed and held.
+     * This activates a Snackbar to ask the user if he wants to delete the Event.
+     * If the user chooses to delete the Event, this function will delete it and remove it from the adapter.
+     */
+    private void initDeleteEvent() {
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+
+                // The Event that was pressed.
+                final Event event = eventList.get(position);
+
+                // Asking the user if he's SURE he wants to delete the event.
+                Snackbar.make(view, "Are you SURE you want to delete the Event ?", Snackbar.LENGTH_LONG)
+                        .setAction("YES", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                // If the user pressed "YES" in the Snackbar, the Event will be deleted.
+                                parseUsageMethods.deleteEvent(event);
+                                adapter.remove(event);
+                                Toast.makeText(getApplicationContext(), "Event is being deleted...", Toast.LENGTH_SHORT).show();
+                            }
+                        }).show();
+                return true;
+            }
+        });
+    }
+
+    /**
+     * This runs after the addEvent button was pressed.
+     * This will start ManagerEventsActivity for a result.
+     */
+    private void initNewEventButton() {
+        addEvent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Intent intent = new Intent(MainActivity.this, ManageEventsActivity.class);
+                intent.setAction(ACTION_CREATE_EVENT);
+                startActivityForResult(intent, START_ACTIVITY_FOR_RESULT_REQUEST_CODE);
+            }
+        });
+    }
+
+    /**
+     * This initiates the eventList, the ArrayAdapter, and sets the adapter as the adapter of the ListView.
+     * This function contains a callback method to run after the list of Events stored in the Parse server returns, so that
+     * the eventList would set as the list of Events on the Parse server.
+     */
     private void initEventList() {
         parseUsageMethods.getAllEvents(new EventSystemInterface.EventArrayListCallback() {
             @Override
@@ -64,6 +125,10 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * This function registers the Event class as a subclass of ParseObject
+     * and initializes the Parse connection for this application.
+     */
     private void initParseStuff() {
         ParseObject.registerSubclass(Event.class);
 
@@ -71,21 +136,6 @@ public class MainActivity extends AppCompatActivity {
                 .applicationId("iioJkrW7NrDjXrqFQcxJCm7HhkFIrEEbMd0vmgPp")
                 .clientKey("PvzhaxHueoNlOJYXtf5JvlUotMZW5L7XJGRaiTEI")
                 .server("https://parseapi.back4app.com/").build());
-    }
-
-
-    private void initNewEventButton() {
-        addEvent.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                Intent intent = new Intent(MainActivity.this, ManageEventsActivity.class);
-                intent.setAction(ACTION_CREATE_EVENT);
-                startActivityForResult(intent, START_ACTIVITY_FOR_RESULT_CONST);
-
-                //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show();
-            }
-        });
     }
 
     @Override
@@ -110,6 +160,14 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Dispatch incoming result to the correct fragment.
+     *
+     * @param requestCode The integer request code originally supplied to startActivityForResult(),
+     *                    allowing you to identify who this result came from.
+     * @param resultCode  The integer result code returned by the child activity through its setResult().
+     * @param intent      An Intent, which can return result data to the caller (various data can be attached to Intent "extras").
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);

@@ -20,7 +20,7 @@ import static com.example.user1.eventfool.ManageEventsActivity.SPLIT_DATE_BY;
  */
 public class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
 
-    AppCompatTextView dateWidget;//The widget of the date.
+    AppCompatTextView dateWidget;//The date widget.
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -51,16 +51,16 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
     }
 
     /**
-     * This runs after the user is done editing the DatePicker.
+     * This is called when the user is done setting a new Date and the dialog has closed.
      * This sets the text of the dateWidget to the date chosen by the user.
      *
-     * @param view
-     * @param year
-     * @param month
-     * @param day
+     * @param view  The picker associated with the dialog.
+     * @param year  The selected year.
+     * @param month The selected month (0-11 for compatibility with Calendar.MONTH).
+     * @param day   The selected day of the month (1-31, depending on month).
      */
     public void onDateSet(DatePicker view, int year, int month, int day) {
-        //For some reason, the month is always 1 month smaller (is writes 0 fo Jan, 11 fo Dec etc).
+        //In Calender, the months start at 0
         month += 1;
 
         dateWidget = (AppCompatTextView) getActivity().findViewById(R.id.date_WGT);//Initialising the widget.

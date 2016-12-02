@@ -17,5 +17,7 @@
     <ListView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:dividerHeight="20dp"
+        android:divider="@color/colorAccentLight"
         android:id="@+id/listView"/>
 </RelativeLayout>

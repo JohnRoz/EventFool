@@ -8,14 +8,16 @@ import com.parse.ParseClassName;
 import com.parse.ParseObject;
 
 import java.io.Serializable;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 
+/**
+ * This is an Object that extends ParseObject.
+ * This object represents an Event.
+ */
 @ParseClassName("Events")
 public class Event extends ParseObject implements Serializable {
 
-
+    // KEYS:
     private final String TITLE_KEY = "TITLE_KEY";
     private final String TEXT_KEY = "TEXT_KEY";
     private final String DATE_KEY = "DATE_KEY";
@@ -24,9 +26,15 @@ public class Event extends ParseObject implements Serializable {
     }//Default constructor is required.
 
 
+    /**
+     * An override to the toString() method.
+     *
+     * @return If the text of the Event is empty (""), return only the title.
+     * If it isn't, return the title, then a colon and the text afterwards.
+     */
     @Override
     public String toString() {
-        if(!getText().equals(""))
+        if (!getText().equals(""))
             return getTitle() + ": " + getText();
         else
             return getTitle();
@@ -54,12 +62,6 @@ public class Event extends ParseObject implements Serializable {
     }
 
     public void setDate(Date date) {
-        put(DATE_KEY, date);
-    }
-
-    public void setDateToNow() {
-        Calendar cal = new GregorianCalendar(Calendar.YEAR, Calendar.MONTH, Calendar.DAY_OF_MONTH);
-        Date date = cal.getTime();
         put(DATE_KEY, date);
     }
 }
