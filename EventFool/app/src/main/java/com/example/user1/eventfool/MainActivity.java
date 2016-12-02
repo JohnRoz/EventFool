@@ -8,15 +8,23 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.parse.Parse;
 import com.parse.ParseObject;
 
+import java.util.ArrayList;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity {
+
+    static final int START_ACTIVITY_FOR_RESULT_CONST = 100;
+    static final String EVENT_STRING = "Events";
+    static final String ACTION_CREATE_EVENT = "com.example.user1.eventfool.action.CREATE_EVENT";
+    static final String ACTION_EDIT_EVENT = "com.example.user1.eventfool.action.EDIT_EVENT";
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -25,6 +33,10 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.addEvent)
     FloatingActionButton addEvent;
 
+    ArrayList<Event> eventList;
+    ArrayAdapter<Event> adapter;
+    ParseUsageMethods parseUsageMethods;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,15 +44,37 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         ButterKnife.bind(this);
 
+        parseUsageMethods = new ParseUsageMethods();
+
+        initParseStuff();
+
+        initEventList();
+
+        initNewEventButton();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        eventList = parseUsageMethods.getAllEvents();
+        adapter.notifyDataSetChanged();
+    }
+
+    private void initEventList() {
+        eventList = parseUsageMethods.getAllEvents();
+        adapter = new ArrayAdapter<>(MainActivity.this, android.R.layout.simple_list_item_1, eventList);
+        listView.setAdapter(adapter);
+    }
+
+    private void initParseStuff() {
         ParseObject.registerSubclass(Event.class);
+
         Parse.initialize(new Parse.Configuration.Builder(this)
                 .applicationId("iioJkrW7NrDjXrqFQcxJCm7HhkFIrEEbMd0vmgPp")
                 .clientKey("PvzhaxHueoNlOJYXtf5JvlUotMZW5L7XJGRaiTEI")
                 .server("https://parseapi.back4app.com/").build());
-
-
-        initNewEventButton();
     }
+
 
     private void initNewEventButton() {
         addEvent.setOnClickListener(new View.OnClickListener() {
@@ -48,7 +82,8 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
 
                 Intent intent = new Intent(MainActivity.this, ManageEventsActivity.class);
-                startActivity(intent);
+                intent.setAction(ACTION_CREATE_EVENT);
+                startActivityForResult(intent, START_ACTIVITY_FOR_RESULT_CONST);
 
                 //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show();
             }
@@ -75,5 +110,16 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+
+        Event newEvent = (Event) intent.getSerializableExtra(EVENT_STRING);
+        adapter.add(newEvent);
+
+        //adapter.notifyDataSetChanged();
+
     }
 }

@@ -1,5 +1,6 @@
 package com.example.user1.eventfool;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -9,7 +10,11 @@ import java.util.List;
 public interface EventSystemInterface {
     void saveEvent(Event event);
 
-    List getAllEvent();
+    void getAllEvents(EventArrayListCallback callback);
 
     void deleteEvent(Event event);
+
+    interface EventArrayListCallback{
+        void returnArrayList(final ArrayList<Event> notesArrayList);
+    }
 }

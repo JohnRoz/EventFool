@@ -10,6 +10,8 @@ import android.widget.TimePicker;
 
 import java.util.Calendar;
 
+import static com.example.user1.eventfool.ManageEventsActivity.SPLIT_TIME_BY;
+
 /**
  * Created by USER1 on 01/12/2016.
  */
@@ -31,7 +33,7 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
             hour = c.get(Calendar.HOUR_OF_DAY);
             minute = c.get(Calendar.MINUTE);
         } else {
-            String[] pickedTime = timeWidget.getText().toString().split(":");
+            String[] pickedTime = timeWidget.getText().toString().split(SPLIT_TIME_BY);
             hour = Integer.parseInt(pickedTime[0]);
             minute = Integer.parseInt(pickedTime[1]);
 

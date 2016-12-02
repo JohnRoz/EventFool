@@ -12,34 +12,21 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
-@ParseClassName("Event")
+@ParseClassName("Events")
 public class Event extends ParseObject implements Serializable {
 
 
-    public static final String TITLE_KEY = "TITLE_KEY";
-    public static final String TEXT_KEY = "TITLE_KEY";
-    public static final String DATE_KEY = "DATE_KEY";
+    private final String TITLE_KEY = "TITLE_KEY";
+    private final String TEXT_KEY = "TEXT_KEY";
+    private final String DATE_KEY = "DATE_KEY";
 
     public Event() {
     }//Default constructor is required.
 
-    public Event(String title, String text, Date date) {
-        super();
-        setTitle(title);
-        setText(text);
-        setDate(date);
-    }
-
-    public Event(String title, String text) {
-        super();
-        setTitle(title);
-        setText(text);
-        setDatetoNow();
-    }
 
     @Override
     public String toString() {
-        return getText();
+        return getTitle();
     }
 
     //Getters & Setters

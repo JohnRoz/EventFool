@@ -1,6 +1,8 @@
 package com.example.user1.eventfool;
 
+import android.app.Activity;
 import android.app.DialogFragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -18,7 +20,14 @@ import java.util.GregorianCalendar;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.example.user1.eventfool.MainActivity.ACTION_CREATE_EVENT;
+import static com.example.user1.eventfool.MainActivity.ACTION_EDIT_EVENT;
+import static com.example.user1.eventfool.MainActivity.EVENT_STRING;
+
 public class ManageEventsActivity extends AppCompatActivity {
+
+    static final String SPLIT_DATE_BY = "/";
+    static final String SPLIT_TIME_BY = ":";
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -44,6 +53,8 @@ public class ManageEventsActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         ButterKnife.bind(this);
 
+        String action = getIntent().getAction();
+
         parseUsageMethods = new ParseUsageMethods();
 
         initDatePicker();
@@ -51,6 +62,13 @@ public class ManageEventsActivity extends AppCompatActivity {
         initTimePicker();
 
         initSaveButton();
+
+        switch(action){
+            case ACTION_CREATE_EVENT:
+                break;
+            case ACTION_EDIT_EVENT:
+                break;
+        }
     }
 
     private void initDatePicker() {
@@ -92,16 +110,22 @@ public class ManageEventsActivity extends AppCompatActivity {
                 newEvent.setDate(date);
 
                 parseUsageMethods.saveEvent(newEvent);
+
+                Intent resultIntent = new Intent();
+                resultIntent.putExtra(EVENT_STRING, newEvent);
+                setResult(Activity.RESULT_OK, resultIntent);
+
+                finish();
             }
         });
     }
 
     private Date createDatefromEventDetails() {
-        String[] pickedTime = timeWidget.getText().toString().split(":");
+        String[] pickedTime = timeWidget.getText().toString().split(SPLIT_TIME_BY);
         int hour = Integer.parseInt(pickedTime[0]);
         int minute = Integer.parseInt(pickedTime[1]);
 
-        String[] pickedDate = dateWidget.getText().toString().split("/");
+        String[] pickedDate = dateWidget.getText().toString().split(SPLIT_DATE_BY);
         int day = Integer.parseInt(pickedDate[0]);
         int month = Integer.parseInt(pickedDate[1]);
         int year = Integer.parseInt(pickedDate[2]);

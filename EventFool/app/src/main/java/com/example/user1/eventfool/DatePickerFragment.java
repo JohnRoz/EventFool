@@ -9,6 +9,8 @@ import android.widget.DatePicker;
 
 import java.util.Calendar;
 
+import static com.example.user1.eventfool.ManageEventsActivity.SPLIT_DATE_BY;
+
 /**
  * Created by USER1 on 01/12/2016.
  */
@@ -37,7 +39,7 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
         } else {// If the user already picked a date and wants to change it
 
             // Splitting the text of the dateWidget to day, month and year variables.
-            String[] pickedDate = dateWidget.getText().toString().split("/");
+            String[] pickedDate = dateWidget.getText().toString().split(SPLIT_DATE_BY);
             day = Integer.parseInt(pickedDate[0]);
             month = Integer.parseInt(pickedDate[1]);
             year = Integer.parseInt(pickedDate[2]);
@@ -62,7 +64,7 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
         month += 1;
 
         dateWidget = (AppCompatTextView) getActivity().findViewById(R.id.date_WGT);//Initialising the widget.
-        dateWidget.setText(day + "/" + month + "/" + year);//Setting the text of the widget.
+        dateWidget.setText(day + SPLIT_DATE_BY + month + SPLIT_DATE_BY + year);//Setting the text of the widget.
 
     }
 }
