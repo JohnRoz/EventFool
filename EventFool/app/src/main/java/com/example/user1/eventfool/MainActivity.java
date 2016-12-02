@@ -117,4 +117,10 @@ public class MainActivity extends AppCompatActivity {
         initEventList();
 
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        initEventList();
+    }
 }

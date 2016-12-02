@@ -26,7 +26,10 @@ public class Event extends ParseObject implements Serializable {
 
     @Override
     public String toString() {
-        return getTitle() + ": " + getText();
+        if(!getText().equals(""))
+            return getTitle() + ": " + getText();
+        else
+            return getTitle();
     }
 
     //Getters & Setters

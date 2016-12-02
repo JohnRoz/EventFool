@@ -142,7 +142,8 @@ public class ManageEventsActivity extends AppCompatActivity {
         String date = dateWidget.getText().toString();
         String time = timeWidget.getText().toString();
 
-        return !title.equals("") && !text.equals("") && !date.equals("") && !time.equals("");
+        return !title.equals("") && !text.equals("") && !date.equals("") && !time.equals("") ||
+                !title.equals("") && !date.equals("") && !time.equals("");
     }
 
 
