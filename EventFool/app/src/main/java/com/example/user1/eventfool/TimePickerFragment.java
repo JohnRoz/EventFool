@@ -61,17 +61,30 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
         String hourString = hourOfDay + "";
         String minuteString = minute + "";
 
-        // 00 in int turns to 0
-        if (hourString.equals("0"))
-            hourString = "00";
-
-        if (minuteString.equals("0"))
-            minuteString = "00";
-
+        String[] fixedTimeStrings = fixTimeStrings(hourString, minuteString);
+        hourString = fixedTimeStrings[0];
+        minuteString = fixedTimeStrings[1];
 
         timeWidget.setText(hourString + ":" + minuteString);
+    }
 
+    /**
+     * This method is used to check the hour or the minute that are supposed tobe "00" - "09" are not
+     * turning to "0" - "9". This happens because of the int type qualities.
+     *
+     * @param hour   The hour to fix.
+     * @param minute The minute to fix.
+     * @return A String array containing the 2 fixed params.
+     */
+    public static String[] fixTimeStrings(String hour, String minute) {
+        for (int i = 0; i < 10; i++) {
+            if (hour.equals(i + ""))
+                hour = "0" + i;
+            if (minute.equals(i + ""))
+                minute = "0" + i;
+        }
 
+        return new String[]{hour, minute};
     }
 
 }

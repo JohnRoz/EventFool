@@ -107,6 +107,10 @@ public class ShowEventActivity extends AppCompatActivity {
                 String hour = cal.get(Calendar.HOUR_OF_DAY) + "";
                 String minute = cal.get(Calendar.MINUTE) + "";
 
+                String[] fixedTimeStrings = TimePickerFragment.fixTimeStrings(hour, minute);
+                hour = fixedTimeStrings[0];
+                minute = fixedTimeStrings[1];
+
                 SimpleDateFormat dateFormat = new SimpleDateFormat("EEE");
                 String dayOfWeek = dateFormat.format(thisEventDate);
 

@@ -186,6 +186,10 @@ public class ManageEventsActivity extends AppCompatActivity {
                 String hour = cal.get(Calendar.HOUR_OF_DAY) + "";
                 String minute = cal.get(Calendar.MINUTE) + "";
 
+                String[] fixedTimeStrings = TimePickerFragment.fixTimeStrings(hour, minute);
+                hour = fixedTimeStrings[0];
+                minute = fixedTimeStrings[1];
+
                 //setting the showDate & showTime TextViews by the date of the Event that was pressed.
                 dateWidget.setText(day + SPLIT_DATE_BY + month + SPLIT_DATE_BY + year);
                 timeWidget.setText(hour + SPLIT_TIME_BY + minute);
