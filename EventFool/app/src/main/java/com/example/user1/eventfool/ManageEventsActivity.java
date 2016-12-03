@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -22,6 +23,7 @@ import butterknife.ButterKnife;
 
 import static com.example.user1.eventfool.MainActivity.ACTION_CREATE_EVENT;
 import static com.example.user1.eventfool.MainActivity.ACTION_EDIT_EVENT;
+import static com.example.user1.eventfool.MainActivity.EVENT_LIST_POSITION_STRING;
 import static com.example.user1.eventfool.MainActivity.EVENT_STRING;
 
 /**
@@ -52,6 +54,9 @@ public class ManageEventsActivity extends AppCompatActivity {
     EditText eventText;
 
     ParseUsageMethods parseUsageMethods;
+    Event editedEvent;
+    int editedEventPosition;
+    String action;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,13 +73,13 @@ public class ManageEventsActivity extends AppCompatActivity {
 
         initSaveButton();
 
-        String action = getIntent().getAction();
+        action = getIntent().getAction();
         switch (action) {
             case ACTION_CREATE_EVENT:
                 initWidgetsText_CurrentDateAndTime();
                 break;
             case ACTION_EDIT_EVENT:
-                initWidgetsText_PreviousDateAndTime();
+                initPreviousDetails();
                 break;
         }
     }
@@ -91,24 +96,43 @@ public class ManageEventsActivity extends AppCompatActivity {
                     return;
                 }
 
+                // The names of the details in a more organized way.
                 String title = eventTitle.getText().toString();
                 String text = eventText.getText().toString();
                 Date date = createDateFromEventDetails();
 
-                Event newEvent = new Event();
-                newEvent.setTitle(title);
-                newEvent.setText(text);
-                newEvent.setDate(date);
-
-                parseUsageMethods.saveEvent(newEvent);
-
-                Intent resultIntent = new Intent();
-                resultIntent.putExtra(EVENT_STRING, newEvent);
-                setResult(Activity.RESULT_OK, resultIntent);
-
-                finish();
+                switch (action) {
+                    case ACTION_CREATE_EVENT:
+                        saveEvent(new Event(), title, text, date);
+                        break;
+                    case ACTION_EDIT_EVENT:
+                        saveEvent(editedEvent, title, text, date);
+                        break;
+                }
             }
         });
+    }
+
+    /**
+     * This is for saving the Event, whether it's a new Event or an edited Event.
+     *
+     * @param event The Event to be saved.
+     * @param title The title value of the Event.
+     * @param text  The text value of the Event.
+     * @param date  The Date of the Event.
+     */
+    private void saveEvent(Event event, String title, String text, Date date) {
+        event.setTitle(title);
+        event.setText(text);
+        event.setDate(date);
+
+        parseUsageMethods.saveEvent(event);
+
+        Intent resultIntent = new Intent();
+        resultIntent.putExtra(EVENT_STRING, event);
+        setResult(Activity.RESULT_OK, resultIntent);
+
+        finish();
     }
 
 
@@ -121,7 +145,7 @@ public class ManageEventsActivity extends AppCompatActivity {
         Calendar cal = Calendar.getInstance();
 
         String currentYear = cal.get(Calendar.YEAR) + "";
-        String currentMonth = cal.get(Calendar.MONTH) + 1 + "";
+        String currentMonth = cal.get(Calendar.MONTH) + 1 + "";// In Calender, the month values are between 0 and 11.
         String currentDay = cal.get(Calendar.DAY_OF_MONTH) + "";
         String currentHour = cal.get(Calendar.HOUR_OF_DAY) + "";
         String currentMinute = cal.get(Calendar.MINUTE) + "";
@@ -133,24 +157,40 @@ public class ManageEventsActivity extends AppCompatActivity {
     }
 
     /**
-     * Setting the texts of the Date & Time widgets as the previous date & time chosen by the user.
+     * Setting the texts of the Title, Text, Date & Time details as the previous details chosen by the user.
      * This is called when the user Edits an existing Event.
      */
-    private void initWidgetsText_PreviousDateAndTime() {
-        Event serializedPressedEvent = (Event) getIntent().getSerializableExtra(EVENT_STRING);
+    private void initPreviousDetails() {
+        editedEventPosition = getIntent().getIntExtra(EVENT_LIST_POSITION_STRING, editedEventPosition);
 
-        Date selectedDate = serializedPressedEvent.getDate(); // your date
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(selectedDate);
+        parseUsageMethods.getAllEvents(new EventSystemInterface.EventArrayListCallback() {
+            @Override
+            public void returnArrayList(ArrayList<Event> eventsArrayList) {
+                // The Event that was pressed.
+                editedEvent = eventsArrayList.get(editedEventPosition);
 
-        String year = cal.get(Calendar.YEAR) + "";
-        String month = cal.get(Calendar.MONTH) + "";
-        String day = cal.get(Calendar.DAY_OF_MONTH) + "";
-        String hour = cal.get(Calendar.HOUR_OF_DAY) + "";
-        String minute = cal.get(Calendar.MINUTE) + "";
+                //Set the Title & the Text of the Event
+                eventTitle.setText(editedEvent.getTitle());
+                eventText.setText(editedEvent.getText());
 
-        dateWidget.setText(day + SPLIT_DATE_BY + month + SPLIT_DATE_BY + year);
-        timeWidget.setText(hour + SPLIT_TIME_BY + minute);
+                // The date of the Event that was pressed.
+                Date thisEventDate = editedEvent.getDate();
+
+
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(thisEventDate);
+
+                String year = cal.get(Calendar.YEAR) + "";
+                String month = cal.get(Calendar.MONTH) + 1 + "";// In Calender, the month values are between 0 and 11.
+                String day = cal.get(Calendar.DAY_OF_MONTH) + "";
+                String hour = cal.get(Calendar.HOUR_OF_DAY) + "";
+                String minute = cal.get(Calendar.MINUTE) + "";
+
+                //setting the showDate & showTime TextViews by the date of the Event that was pressed.
+                dateWidget.setText(day + SPLIT_DATE_BY + month + SPLIT_DATE_BY + year);
+                timeWidget.setText(hour + SPLIT_TIME_BY + minute);
+            }
+        });
     }
 
     /**
@@ -190,7 +230,7 @@ public class ManageEventsActivity extends AppCompatActivity {
     private Date createDateFromEventDetails() {
         String[] pickedDate = dateWidget.getText().toString().split(SPLIT_DATE_BY);
         int day = Integer.parseInt(pickedDate[0]);
-        int month = Integer.parseInt(pickedDate[1]);
+        int month = Integer.parseInt(pickedDate[1]) - 1; // In Calender, the month values are between 0 and 11.
         int year = Integer.parseInt(pickedDate[2]);
 
         String[] pickedTime = timeWidget.getText().toString().split(SPLIT_TIME_BY);
@@ -214,6 +254,5 @@ public class ManageEventsActivity extends AppCompatActivity {
 
         return !title.equals("") || !text.equals("");
     }
-
 
 }

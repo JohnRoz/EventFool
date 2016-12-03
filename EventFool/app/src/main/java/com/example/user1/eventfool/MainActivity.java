@@ -1,5 +1,6 @@
 package com.example.user1.eventfool;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -27,8 +28,9 @@ import butterknife.ButterKnife;
  */
 public class MainActivity extends AppCompatActivity {
 
-    static final int START_ACTIVITY_FOR_RESULT_REQUEST_CODE = 100; // The requestCode for onActivityResult().
+    static final int CREATE_EVENT_FOR_RESULT = 100; // The requestCode for onActivityResult().
     static final String EVENT_STRING = "Events";
+    static final String EVENT_LIST_POSITION_STRING = "position"; // A String for the Intents to pass Date objects.
 
     // ACTIONS:
     static final String ACTION_CREATE_EVENT = "com.example.user1.eventfool.action.CREATE_EVENT";
@@ -61,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
 
         initNewEventButton();
 
-        initPresentEvent();
+        initShowEvent();
 
         initDeleteEvent();
     }
@@ -71,14 +73,18 @@ public class MainActivity extends AppCompatActivity {
      * This starts ShowEventActivity.
      * The Event that was pressed is passed to ShowEventActivity as an extra.
      */
-    private void initPresentEvent() {
+    private void initShowEvent() {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Event thisEvent = adapter.getItem(position);// The Event that was pressed.
 
+                // Sending an Intent holding the position of the Event in the eventList.
+                // Using that position the ShowEventActivity will be able to get the REAL Event from the server
+                // and NOT the Serialized Event.
+                // Serialized Events DON"T hold the values of their keys as same as the real Events from the server.
                 Intent intent = new Intent(MainActivity.this, ShowEventActivity.class);
-                intent.putExtra(EVENT_STRING, thisEvent);
+                intent.putExtra(EVENT_LIST_POSITION_STRING, position);
+
                 startActivity(intent);
             }
         });
@@ -124,7 +130,7 @@ public class MainActivity extends AppCompatActivity {
 
                 Intent intent = new Intent(MainActivity.this, ManageEventsActivity.class);
                 intent.setAction(ACTION_CREATE_EVENT);
-                startActivityForResult(intent, START_ACTIVITY_FOR_RESULT_REQUEST_CODE);
+                startActivityForResult(intent, CREATE_EVENT_FOR_RESULT);
             }
         });
     }
@@ -192,7 +198,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
 
-        initEventList();
+        if (requestCode == CREATE_EVENT_FOR_RESULT && resultCode == Activity.RESULT_OK)
+            initEventList();
 
     }
 

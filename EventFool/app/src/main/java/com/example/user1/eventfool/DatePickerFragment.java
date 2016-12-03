@@ -60,7 +60,7 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
      * @param day   The selected day of the month (1-31, depending on month).
      */
     public void onDateSet(DatePicker view, int year, int month, int day) {
-        //In Calender, the months start at 0
+        // In Calender, the month values are between 0 and 11
         month += 1;
 
         dateWidget = (AppCompatTextView) getActivity().findViewById(R.id.date_WGT);//Initialising the widget.
