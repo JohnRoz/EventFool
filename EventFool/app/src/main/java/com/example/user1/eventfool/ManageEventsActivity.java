@@ -150,6 +150,10 @@ public class ManageEventsActivity extends AppCompatActivity {
         String currentHour = cal.get(Calendar.HOUR_OF_DAY) + "";
         String currentMinute = cal.get(Calendar.MINUTE) + "";
 
+        String[] fixedTimeStrings = TimePickerFragment.fixTimeStrings(currentHour, currentMinute);
+        currentHour = fixedTimeStrings[0];
+        currentMinute = fixedTimeStrings[1];
+
         dateWidget.setText(currentDay + SPLIT_DATE_BY + currentMonth + SPLIT_DATE_BY + currentYear);
         timeWidget.setText(currentHour + SPLIT_TIME_BY + currentMinute);
 

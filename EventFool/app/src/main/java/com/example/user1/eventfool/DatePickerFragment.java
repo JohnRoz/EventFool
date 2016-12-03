@@ -9,6 +9,7 @@ import android.widget.DatePicker;
 
 import java.util.Calendar;
 
+import static com.example.user1.eventfool.MainActivity.ACTION_CREATE_EVENT;
 import static com.example.user1.eventfool.ManageEventsActivity.SPLIT_DATE_BY;
 
 /**
@@ -30,7 +31,7 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
         int month;
         int year;
 
-        if (dateWidget.getText().equals("")) {
+        if (getActivity().getIntent().getAction().equals(ACTION_CREATE_EVENT)) {
             // Use the current date as the default date in the picker
             final Calendar cal = Calendar.getInstance();
             year = cal.get(Calendar.YEAR);
@@ -41,7 +42,7 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
             // Splitting the text of the dateWidget to day, month and year variables.
             String[] pickedDate = dateWidget.getText().toString().split(SPLIT_DATE_BY);
             day = Integer.parseInt(pickedDate[0]);
-            month = Integer.parseInt(pickedDate[1]);
+            month = Integer.parseInt(pickedDate[1])-1;
             year = Integer.parseInt(pickedDate[2]);
         }
 
