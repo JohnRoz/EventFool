@@ -122,6 +122,12 @@ public class ShowEventActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        initEventDetails();
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == EDIT_EVENT_FOR_RESULT && resultCode == Activity.RESULT_OK)
