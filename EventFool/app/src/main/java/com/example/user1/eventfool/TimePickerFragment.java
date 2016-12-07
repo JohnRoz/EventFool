@@ -69,8 +69,8 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
     }
 
     /**
-     * This method is used to check the hour or the minute that are supposed tobe "00" - "09" are not
-     * turning to "0" - "9". This happens because of the int type qualities.
+     * This method is used to check that the hour or the minute that are supposed to be between "00" and "09", are not
+     * turned to "0" - "9". This happens because of the int type properties.
      *
      * @param hour   The hour to fix.
      * @param minute The minute to fix.

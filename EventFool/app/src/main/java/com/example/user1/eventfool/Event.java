@@ -8,7 +8,10 @@ import com.parse.ParseClassName;
 import com.parse.ParseObject;
 
 import java.io.Serializable;
+import java.util.Calendar;
 import java.util.Date;
+
+import static com.example.user1.eventfool.ManageEventsActivity.SPLIT_DATE_BY;
 
 /**
  * This is an Object that extends ParseObject.
@@ -24,7 +27,7 @@ public class Event extends ParseObject implements Serializable {
 
 
     public Event() {
-    }//Default constructor is required.
+    }// A default constructor is required.
 
 
     /**
@@ -35,10 +38,22 @@ public class Event extends ParseObject implements Serializable {
      */
     @Override
     public String toString() {
+
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(getDate());
+
+        String year = cal.get(Calendar.YEAR) + "";
+        String month = cal.get(Calendar.MONTH) + 1 + "";// In Calender, the month values are between 0 and 11.
+        String day = cal.get(Calendar.DAY_OF_MONTH) + "";
+
+        String date = day + SPLIT_DATE_BY + month + SPLIT_DATE_BY + year;
+
+        String show = date + "\n" + "\n" + getTitle();
+
         if (!getText().equals(""))
-            return getTitle() + ": " + getText();
-        else
-            return getTitle();
+            return show + ": " + getText();
+
+        return show;
     }
 
     //Getters & Setters

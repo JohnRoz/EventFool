@@ -28,6 +28,7 @@ import butterknife.ButterKnife;
  */
 public class MainActivity extends AppCompatActivity {
 
+    // CONSTANTS:
     static final int CREATE_EVENT_FOR_RESULT = 100; // The requestCode for onActivityResult().
     static final String EVENT_STRING = "Events";
     static final String EVENT_LIST_POSITION_STRING = "position"; // A String for the Intents to pass Date objects.
@@ -144,11 +145,44 @@ public class MainActivity extends AppCompatActivity {
         parseUsageMethods.getAllEvents(new EventSystemInterface.EventArrayListCallback() {
             @Override
             public void returnArrayList(ArrayList<Event> eventsArrayList) {
-                eventList = eventsArrayList;
+                eventList = sortEventsByDate(eventsArrayList);
                 adapter = new ArrayAdapter<>(MainActivity.this, android.R.layout.simple_list_item_1, eventList);
+                adapter.setNotifyOnChange(true);
                 listView.setAdapter(adapter);
             }
         });
+    }
+
+    /**
+     * This methods receives an ArrayList of Events and returns a new ArrayList with the same items only sorted by date.
+     *
+     * @param eventsArrayList The ArrayList to be sorted.
+     * @return An ArrayList identical to the one received, only this one is sorted by the date of each Event in it's items
+     */
+    public static ArrayList<Event> sortEventsByDate(ArrayList<Event> eventsArrayList) {
+        ArrayList<Event> sortedEvents = new ArrayList<>();// The ArrayList to be returned
+        boolean isMostEarly;// A boolean to check if the current item is the earliest.
+
+        while (eventsArrayList.size() != 0) // Repeat until eventsArrayList has no more Events left in it.
+
+            // These 2 loops get the earliest Event, add it to the sortedEvents ArrayList, and remove it from eventsArrayList.
+            for (int i = 0; i < eventsArrayList.size(); i++) {
+                isMostEarly = true;
+                for (int j = 0; j < eventsArrayList.size(); j++) {
+                    if (eventsArrayList.get(i).getDate().after(eventsArrayList.get(j).getDate())) {
+                        isMostEarly = false;
+                        break;
+                    }
+                }
+                if (isMostEarly) {
+                    sortedEvents.add(eventsArrayList.get(i));
+                    eventsArrayList.remove(eventsArrayList.get(i));
+                    break;
+                }
+            }
+
+
+        return sortedEvents;
     }
 
     /**
@@ -158,10 +192,14 @@ public class MainActivity extends AppCompatActivity {
     private void initParseStuff() {
         ParseObject.registerSubclass(Event.class);
 
-        Parse.initialize(new Parse.Configuration.Builder(this)
-                .applicationId("iioJkrW7NrDjXrqFQcxJCm7HhkFIrEEbMd0vmgPp")
-                .clientKey("PvzhaxHueoNlOJYXtf5JvlUotMZW5L7XJGRaiTEI")
-                .server("https://parseapi.back4app.com/").build());
+        try {
+            Parse.initialize(new Parse.Configuration.Builder(this)
+                    .applicationId("iioJkrW7NrDjXrqFQcxJCm7HhkFIrEEbMd0vmgPp")
+                    .clientKey("PvzhaxHueoNlOJYXtf5JvlUotMZW5L7XJGRaiTEI")
+                    .server("https://parseapi.back4app.com/").build());
+        } catch (IllegalStateException ex) {// NEVER KILL YOUR WITNESSES !
+            Toast.makeText(getApplicationContext(), "CHECK PARSE initialize FOR EXCEPTIONS", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -198,8 +236,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
 
-        if (requestCode == CREATE_EVENT_FOR_RESULT && resultCode == Activity.RESULT_OK)
+        if (requestCode == CREATE_EVENT_FOR_RESULT && resultCode == Activity.RESULT_OK) {
+
             initEventList();
+        }
 
     }
 

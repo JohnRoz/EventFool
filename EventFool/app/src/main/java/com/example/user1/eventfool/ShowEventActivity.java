@@ -19,6 +19,7 @@ import butterknife.ButterKnife;
 
 import static com.example.user1.eventfool.MainActivity.ACTION_EDIT_EVENT;
 import static com.example.user1.eventfool.MainActivity.EVENT_LIST_POSITION_STRING;
+import static com.example.user1.eventfool.MainActivity.sortEventsByDate;
 import static com.example.user1.eventfool.ManageEventsActivity.SPLIT_DATE_BY;
 import static com.example.user1.eventfool.ManageEventsActivity.SPLIT_TIME_BY;
 
@@ -87,6 +88,8 @@ public class ShowEventActivity extends AppCompatActivity {
         parseUsageMethods.getAllEvents(new EventSystemInterface.EventArrayListCallback() {
             @Override
             public void returnArrayList(ArrayList<Event> eventsArrayList) {
+                eventsArrayList = sortEventsByDate(eventsArrayList);
+
                 // The Event that was pressed.
                 thisEvent = eventsArrayList.get(eventPosition);
 
@@ -107,9 +110,9 @@ public class ShowEventActivity extends AppCompatActivity {
                 String hour = cal.get(Calendar.HOUR_OF_DAY) + "";
                 String minute = cal.get(Calendar.MINUTE) + "";
 
-                String[] fixedTimeStrings = TimePickerFragment.fixTimeStrings(hour, minute);
-                hour = fixedTimeStrings[0];
-                minute = fixedTimeStrings[1];
+                String[] timeStrings_fixed = TimePickerFragment.fixTimeStrings(hour, minute);
+                hour = timeStrings_fixed[0];
+                minute = timeStrings_fixed[1];
 
                 SimpleDateFormat dateFormat = new SimpleDateFormat("EEE");
                 String dayOfWeek = dateFormat.format(thisEventDate);
