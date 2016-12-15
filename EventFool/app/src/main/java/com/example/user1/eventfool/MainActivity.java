@@ -58,8 +58,6 @@ public class MainActivity extends AppCompatActivity {
 
         parseUsageMethods = new ParseUsageMethods();
 
-        initParseStuff();
-
         initEventList();
 
         initNewEventButton();
@@ -149,6 +147,7 @@ public class MainActivity extends AppCompatActivity {
                 adapter = new ArrayAdapter<>(MainActivity.this, android.R.layout.simple_list_item_1, eventList);
                 adapter.setNotifyOnChange(true);
                 listView.setAdapter(adapter);
+                adapter.setNotifyOnChange(true);
             }
         });
     }
@@ -183,23 +182,6 @@ public class MainActivity extends AppCompatActivity {
 
 
         return sortedEvents;
-    }
-
-    /**
-     * This function registers the Event class as a subclass of ParseObject
-     * and initializes the Parse connection for this application.
-     */
-    private void initParseStuff() {
-        ParseObject.registerSubclass(Event.class);
-
-        try {
-            Parse.initialize(new Parse.Configuration.Builder(this)
-                    .applicationId("iioJkrW7NrDjXrqFQcxJCm7HhkFIrEEbMd0vmgPp")
-                    .clientKey("PvzhaxHueoNlOJYXtf5JvlUotMZW5L7XJGRaiTEI")
-                    .server("https://parseapi.back4app.com/").build());
-        } catch (IllegalStateException ex) {// NEVER KILL YOUR WITNESSES !
-            Toast.makeText(getApplicationContext(), "CHECK PARSE initialize FOR EXCEPTIONS", Toast.LENGTH_SHORT).show();
-        }
     }
 
     @Override
@@ -237,8 +219,8 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, intent);
 
         if (requestCode == CREATE_EVENT_FOR_RESULT && resultCode == Activity.RESULT_OK) {
-
-            initEventList();
+            //initEventList();
+            adapter.add((Event)getIntent().getSerializableExtra(EVENT_STRING));
         }
 
     }
@@ -246,6 +228,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        initEventList();
+        //initEventList();
+        adapter.notifyDataSetChanged();
     }
 }
